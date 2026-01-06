@@ -1,0 +1,660 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     29083,        652]
+NotebookOptionsPosition[     28378,        632]
+NotebookOutlinePosition[     28805,        649]
+CellTagsIndexPosition[     28762,        646]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"PerfectDistanceQ", "[", "G_", "]"}], ":=", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Union", "@*", "Flatten", "@*", "Round"}], "@", 
+       RowBox[{"GraphDistanceMatrix", "[", "G", "]"}]}], " ", "==", " ", 
+      RowBox[{"Range", "[", 
+       RowBox[{"0", ",", 
+        RowBox[{"Binomial", "[", 
+         RowBox[{
+          RowBox[{"VertexCount", "[", "G", "]"}], ",", "2"}], "]"}]}], 
+       "]"}]}], ")"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"EdgeWeights", "[", "G_", "]"}], ":=", 
+    RowBox[{"AnnotationValue", "[", 
+     RowBox[{"G", ",", "EdgeWeight"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"NoNewVertex", "[", "G_", "]"}], ":=", 
+  RowBox[{"Complement", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#1", "\[UndirectedEdge]", "#2"}], "&"}], "@@@", 
+      RowBox[{"Subsets", "[", 
+       RowBox[{
+        RowBox[{"VertexList", "[", "G", "]"}], ",", 
+        RowBox[{"{", "2", "}"}]}], "]"}]}], ")"}], ",", 
+    RowBox[{"EdgeList", "[", "G", "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"OneNewVertex", "[", "G_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"#", "\[UndirectedEdge]", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"VertexCount", "[", "G", "]"}], "+", "1"}], ")"}]}], "&"}], "/@",
+    " ", 
+   RowBox[{"VertexList", "[", "G", "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"TwoNewVertex", "[", "G_", "]"}], ":=", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"VertexCount", "[", "G", "]"}], "+", "1"}], ")"}], 
+    "\[UndirectedEdge]", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"VertexCount", "[", "G", "]"}], "+", "2"}], ")"}]}], 
+   "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"NewEdges", "[", "G_", "]"}], ":=", 
+   RowBox[{"Join", "[", 
+    RowBox[{
+     RowBox[{"NoNewVertex", "[", "G", "]"}], ",", 
+     RowBox[{"OneNewVertex", "[", "G", "]"}], ",", 
+     RowBox[{"TwoNewVertex", "[", "G", "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"NextWeight", "[", "G_", "]"}], ":=", "\[IndentingNewLine]", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"distances", ",", "nextWeight"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"distances", " ", "=", 
+       RowBox[{"DeleteCases", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{
+          "Union", "@*", "Flatten", "@*", "Round", "@*", 
+           "GraphDistanceMatrix", "@*", "Graph"}], "@", "G"}], ",", "0"}], 
+        "]"}]}], ";", 
+      RowBox[{"nextWeight", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"Max", "[", 
+         RowBox[{"EdgeWeights", "[", "G", "]"}], "]"}], "+", "1"}]}], ";", 
+      RowBox[{"While", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"nextWeight", "<=", 
+           RowBox[{"Length", "[", "distances", "]"}]}], ")"}], "\[And]", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"distances", "[", 
+            RowBox[{"[", "nextWeight", "]"}], "]"}], "==", "nextWeight"}], 
+          ")"}]}], ",", 
+        RowBox[{"nextWeight", "++"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "nextWeight"}]}], "\[IndentingNewLine]", "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"AddWeightedEdge", "[", 
+    RowBox[{"G_", ",", "e_", ",", "w_"}], "]"}], ":=", 
+   RowBox[{"Graph", "[", 
+    RowBox[{
+     RowBox[{"EdgeAdd", "[", 
+      RowBox[{"G", ",", "e"}], "]"}], ",", 
+     RowBox[{"EdgeWeight", "->", 
+      RowBox[{"Append", "[", 
+       RowBox[{
+        RowBox[{"EdgeWeights", "[", "G", "]"}], ",", "w"}], "]"}]}]}], 
+    "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Children", "[", "G_", "]"}], ":=", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"AddWeightedEdge", "[", 
+       RowBox[{"G", ",", "#", ",", 
+        RowBox[{"NextWeight", "[", "G", "]"}]}], "]"}], "&"}], "/@", 
+     RowBox[{"NewEdges", "[", "G", "]"}]}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.918057809000286*^9, 3.918057851237513*^9}, {
+   3.918057891361477*^9, 3.9180578956338*^9}, {3.918057931331959*^9, 
+   3.918057955728643*^9}, {3.9180579915055923`*^9, 3.918058020566766*^9}, {
+   3.9180591438464203`*^9, 3.918059153191644*^9}, {3.918059261709109*^9, 
+   3.918059276258486*^9}, {3.918060232937068*^9, 3.918060313517551*^9}, {
+   3.918060525521657*^9, 3.918060661162601*^9}, {3.918061246154743*^9, 
+   3.9180612882406*^9}, {3.918061510169338*^9, 3.918061530262354*^9}, {
+   3.918061926704887*^9, 3.918061983679656*^9}, {3.9180629726154957`*^9, 
+   3.9180629813216267`*^9}, {3.918063062928125*^9, 3.918063068744345*^9}, {
+   3.91806313145829*^9, 3.918063148066098*^9}, {3.918063310153048*^9, 
+   3.918063312695207*^9}, {3.918063373846198*^9, 3.918063374013514*^9}, {
+   3.918063566989428*^9, 3.918063618866559*^9}, {3.918063677822073*^9, 
+   3.918063727117397*^9}, {3.918063784384503*^9, 3.918063785020209*^9}, {
+   3.918063817651216*^9, 3.918063824783997*^9}, {3.918064924535701*^9, 
+   3.91806494564786*^9}, {3.918065124441806*^9, 3.918065154276813*^9}, {
+   3.918066551497833*^9, 3.9180666636835327`*^9}, {3.918066734301958*^9, 
+   3.918066738167799*^9}, {3.918066786925026*^9, 3.918066854707931*^9}, {
+   3.918067415726742*^9, 3.918067427099826*^9}, {3.918068089897814*^9, 
+   3.918068130693145*^9}, {3.91806829759807*^9, 3.918068314775791*^9}, 
+   3.918068535585647*^9, {3.918068574934074*^9, 3.918068581050222*^9}, {
+   3.918068900645933*^9, 3.918068942726591*^9}, {3.918069265204354*^9, 
+   3.918069270695805*^9}, {3.918069415477784*^9, 3.918069438366086*^9}, {
+   3.9180701644870358`*^9, 3.9180702068270693`*^9}, {3.918070269826932*^9, 
+   3.918070346598459*^9}, {3.918071156413859*^9, 3.918071157004609*^9}, {
+   3.918072496922999*^9, 3.918072544627405*^9}, {3.918072639049082*^9, 
+   3.918072653230562*^9}, {3.9180739078347187`*^9, 3.918073916279917*^9}, {
+   3.918074617906678*^9, 3.918074628342418*^9}, {3.918074676570195*^9, 
+   3.918074680205065*^9}, {3.918075050932253*^9, 3.918075068738693*^9}, {
+   3.918075201849642*^9, 3.918075210187866*^9}, {3.918075305286838*^9, 
+   3.918075372232379*^9}, {3.918075721948238*^9, 3.918075753118348*^9}, {
+   3.918075908110326*^9, 3.918075943961372*^9}, {3.918076682791204*^9, 
+   3.91807669292449*^9}, {3.918076900001719*^9, 3.918076902286552*^9}, {
+   3.918077547446419*^9, 3.918077586697738*^9}, {3.918077627863468*^9, 
+   3.9180776310521183`*^9}, 3.918078121771776*^9, 3.918078172668051*^9, {
+   3.918078403238319*^9, 3.91807844275109*^9}, {3.9180786297805567`*^9, 
+   3.918078654208729*^9}, {3.918078733400682*^9, 3.918078736801742*^9}, {
+   3.918078767176065*^9, 3.918078772892892*^9}, {3.9180788062819357`*^9, 
+   3.918078852557096*^9}, {3.918082982530766*^9, 3.918082997908545*^9}, {
+   3.918146912326591*^9, 3.918146916576446*^9}, {3.918150742011491*^9, 
+   3.918150756779797*^9}, {3.918150790563246*^9, 3.9181508123260098`*^9}, {
+   3.918150908606336*^9, 3.918150989176444*^9}, {3.918151023483163*^9, 
+   3.918151142448333*^9}, {3.9181511743261843`*^9, 3.918151209942996*^9}, {
+   3.918151354444108*^9, 3.9181513609959598`*^9}, {3.9181540510222893`*^9, 
+   3.918154062047642*^9}, {3.918232870302616*^9, 3.918232880482007*^9}, {
+   3.918232942778208*^9, 3.918233028211635*^9}, {3.9182330582349*^9, 
+   3.918233216431079*^9}, {3.918233307364745*^9, 3.91823331838616*^9}, {
+   3.9182333799452543`*^9, 3.9182333842999487`*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"ea773a97-fc2c-4b1f-9806-a7c2b807f6fd"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"n", " ", "=", "8"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"maxEdgeCount", " ", "=", " ", "n"}], ";"}], "\[IndentingNewLine]",
+   "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"TODO", ":", " ", 
+       RowBox[{
+       "Make", " ", "GoodChildQ", " ", "account", " ", "for", " ", 
+        "labelings", " ", "that", " ", "\"\<obviously\>\"", " ", "cannot", 
+        " ", "lead", " ", "to", " ", "a", " ", 
+        RowBox[{"PDG", ".", " ", "ie"}]}]}], ")"}], " ", "2", " ", 
+     "distances", " ", "of", " ", "length", " ", "m", " ", "where", " ", 
+     "next", " ", "weight", " ", "is"}], " ", ">=", " ", 
+    RowBox[{"m", "."}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"GoodChildQ", "[", "G_", "]"}], ":=", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"VertexCount", "[", "G", "]"}], " ", "<=", "n"}], ")"}], " ", 
+     "\[And]", 
+     RowBox[{"(", 
+      RowBox[{"SubsetQ", "[", 
+       RowBox[{
+        RowBox[{"Range", "[", 
+         RowBox[{"Binomial", "[", 
+          RowBox[{"n", ",", "2"}], "]"}], "]"}], ",", 
+        RowBox[{"EdgeWeights", "[", "G", "]"}]}], "]"}], ")"}], "\[And]", 
+     RowBox[{"(", 
+      RowBox[{"AllTrue", "[", 
+       RowBox[{
+        RowBox[{"First", "/@", 
+         RowBox[{"Select", "[", 
+          RowBox[{
+           RowBox[{"Tally", "@", 
+            RowBox[{"DeleteCases", "[", 
+             RowBox[{
+              RowBox[{"Flatten", "@", 
+               RowBox[{"GraphDistanceMatrix", "[", "G", "]"}]}], ",", "0."}], 
+             "]"}]}], ",", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Last", "[", "#", "]"}], ">", "2"}], "&"}]}], "]"}]}], 
+        ",", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"NextWeight", "[", "G", "]"}], "<=", "#"}], "&"}]}], "]"}], 
+      ")"}], "\[And]", 
+     RowBox[{"(", 
+      RowBox[{"Not", "[", 
+       RowBox[{"AnyTrue", "[", 
+        RowBox[{"PDGs", ",", 
+         RowBox[{
+          RowBox[{"IsomorphicSubgraphQ", "[", 
+           RowBox[{"#", ",", 
+            RowBox[{"CanonicalGraph", "[", "G", "]"}]}], "]"}], "&"}]}], 
+        "]"}], "]"}], ")"}]}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PDGs", " ", "=", " ", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"stack", " ", "=", 
+   RowBox[{"CreateDataStructure", "[", "\"\<Stack\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Gstart", " ", "=", " ", 
+    RowBox[{"Graph", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"1", "\[UndirectedEdge]", "2"}], "}"}], ",", 
+      RowBox[{"EdgeWeight", "->", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"1", "\[UndirectedEdge]", "2"}], "->", "1"}], "}"}]}]}], 
+     "]"}]}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"stack", "[", 
+    RowBox[{"\"\<Push\>\"", ",", "Gstart"}], "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"stack2", " ", "=", " ", 
+    RowBox[{"CreateDataStructure", "[", "\"\<Stack\>\"", "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"TotalTime", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"AbsoluteTiming", "[", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{"Depth", " ", "First", " ", "Search"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{"Until", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"stack", "[", "\"\<EmptyQ\>\"", "]"}], "\[And]", 
+        RowBox[{"stack2", "[", "\"\<EmptyQ\>\"", "]"}]}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"G", " ", "=", " ", 
+         RowBox[{"stack", "[", "\"\<Pop\>\"", "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"EdgeCount", "[", "G", "]"}], ">", "maxEdgeCount"}], "  ", 
+          ",", 
+          RowBox[{"stack2", "[", 
+           RowBox[{"\"\<Push\>\"", ",", "G"}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"VertexCount", "[", "G", "]"}], "==", "n"}], " ", 
+               "\[And]", " ", 
+               RowBox[{"PerfectDistanceQ", "[", "G", "]"}]}], ")"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"AppendTo", "[", 
+               RowBox[{"PDGs", ",", 
+                RowBox[{"CanonicalGraph", "[", "G", "]"}]}], "]"}], ";"}], 
+             "\[IndentingNewLine]", ",", 
+             RowBox[{"(*", "Else", "*)"}], "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"children", " ", "=", 
+               RowBox[{"DeleteDuplicates", "[", 
+                RowBox[{
+                 RowBox[{"Select", "[", 
+                  RowBox[{
+                   RowBox[{"Children", "[", "G", "]"}], ",", "GoodChildQ"}], 
+                  "]"}], ",", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"LineGraph", "[", "#1", "]"}], "==", 
+                    RowBox[{"LineGraph", "[", "#2", "]"}]}], "&&", 
+                   RowBox[{"IsomorphicGraphQ", "[", 
+                    RowBox[{"#1", ",", "#2"}], "]"}]}], "&"}]}], "]"}]}], ";",
+               "\[IndentingNewLine]", 
+              RowBox[{"stack", "[", 
+               RowBox[{"\"\<PushList\>\"", ",", "children"}], "]"}], ";"}]}], 
+            "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+         "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"stack", "[", "\"\<EmptyQ\>\"", "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"While", "[", 
+            RowBox[{
+             RowBox[{"Not", "[", 
+              RowBox[{"stack2", "[", "\"\<EmptyQ\>\"", "]"}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"g", " ", "=", " ", 
+               RowBox[{"stack2", "[", "\"\<Pop\>\"", "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{"Not", "[", 
+                  RowBox[{"AnyTrue", "[", 
+                   RowBox[{"PDGs", ",", 
+                    RowBox[{
+                    RowBox[{"IsomorphicSubgraphQ", "[", 
+                    RowBox[{"#", ",", "g"}], "]"}], "&"}]}], "]"}], "]"}], 
+                 ")"}], ",", "\[IndentingNewLine]", 
+                RowBox[{"stack", "[", 
+                 RowBox[{"\"\<Push\>\"", ",", "g"}], "]"}]}], 
+               "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+            "]"}], ";", "\[IndentingNewLine]", 
+           RowBox[{"maxEdgeCount", " ", "=", " ", 
+            RowBox[{"maxEdgeCount", "+", "1"}]}], ";"}]}], 
+         "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", "]"}], 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Print", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<Time To Compute:\\t\>\"", ",", 
+   RowBox[{"TimeObject", "[", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "TotalTime"}], "}"}], "]"}], ",", 
+   "\"\< and \>\"", ",", 
+   RowBox[{"1000", 
+    RowBox[{"FractionalPart", "[", "TotalTime", "]"}]}], ",", "\"\<ms\\n\>\"",
+    ",", "\[IndentingNewLine]", 
+   "\"\<Almost Minimal Perfect Distance Graphs(\>\"", ",", 
+   RowBox[{"Length", "[", "PDGs", "]"}], ",", "\"\<): \\n\>\"", ",", 
+   RowBox[{"TableForm", "[", 
+    RowBox[{"PDGs", ",", 
+     RowBox[{"TableDirections", "->", "Row"}]}], "]"}], ",", "\"\<\\n\>\""}], 
+  "\[IndentingNewLine]", "]"}]}], "Input",
+ CellChangeTimes->{{3.918064659430205*^9, 3.918064861510078*^9}, {
+   3.918065009213674*^9, 3.918065009835816*^9}, {3.918065321783983*^9, 
+   3.918065434653207*^9}, {3.918065665494285*^9, 3.918065676815667*^9}, {
+   3.9180658528140373`*^9, 3.918065871531929*^9}, {3.918069205467011*^9, 
+   3.91806920689704*^9}, {3.918069316932929*^9, 3.918069320710373*^9}, {
+   3.91807214482246*^9, 3.918072155977826*^9}, {3.918150831895355*^9, 
+   3.918150865503152*^9}, {3.9181509012434187`*^9, 3.9181509022203918`*^9}, {
+   3.918151012520857*^9, 3.918151015687454*^9}, {3.91815123248872*^9, 
+   3.918151466322887*^9}, {3.9181515073153973`*^9, 3.918151524627547*^9}, 
+   3.91815155820196*^9, {3.918151607528669*^9, 3.918151620794768*^9}, {
+   3.918151763867588*^9, 3.9181518194160748`*^9}, {3.918151941288601*^9, 
+   3.918151967479619*^9}, {3.918152107501093*^9, 3.918152117549831*^9}, 
+   3.918152286396386*^9, {3.918152430614653*^9, 3.918152499039263*^9}, {
+   3.918153370094944*^9, 3.918153388563183*^9}, {3.918153463785192*^9, 
+   3.918153502007605*^9}, {3.918153584268454*^9, 3.918153600154892*^9}, {
+   3.918154260984565*^9, 3.9181543184754257`*^9}, {3.918156492466555*^9, 
+   3.9181564930767927`*^9}, {3.918156836699449*^9, 3.918156837574912*^9}, {
+   3.918224532677471*^9, 3.918224645983296*^9}, 3.918226914247387*^9, {
+   3.918227578000774*^9, 3.918227604524053*^9}, {3.9182276672278*^9, 
+   3.918227679770204*^9}, 3.918227732019253*^9, {3.918227797946156*^9, 
+   3.918227952826439*^9}, {3.918228032709338*^9, 3.918228034316237*^9}, {
+   3.918228120029621*^9, 3.9182281519734783`*^9}, {3.918228267539809*^9, 
+   3.918228275623878*^9}, {3.918228344577626*^9, 3.918228357337351*^9}, {
+   3.918228566741519*^9, 3.9182285670633593`*^9}, {3.918230888126593*^9, 
+   3.918230950343304*^9}, {3.91823104631712*^9, 3.9182310697431087`*^9}, {
+   3.918231292602022*^9, 3.91823129808051*^9}, {3.918231825134811*^9, 
+   3.9182318897150393`*^9}, 3.918231972680705*^9, {3.9182320812430882`*^9, 
+   3.918232114432889*^9}, {3.918232354505402*^9, 3.9182323984910717`*^9}, {
+   3.91823243697686*^9, 3.918232469059432*^9}, {3.918232503719075*^9, 
+   3.918232506992549*^9}, {3.918232545628391*^9, 3.9182327094103603`*^9}, {
+   3.918232901419649*^9, 3.918232902037157*^9}, {3.9182334824408073`*^9, 
+   3.918233508988316*^9}, {3.9182335513253736`*^9, 3.918233559885104*^9}, {
+   3.91823361882393*^9, 3.918233783242622*^9}, {3.9182348280319986`*^9, 
+   3.918234837628878*^9}, {3.918234897061483*^9, 3.918234911090781*^9}, {
+   3.918234953868843*^9, 3.918234961646971*^9}, {3.91823505511444*^9, 
+   3.91823506218161*^9}, {3.918235105688995*^9, 3.918235109314765*^9}, {
+   3.9182351918349*^9, 3.9182353120199213`*^9}, {3.91823538223127*^9, 
+   3.918235434053382*^9}, {3.918235471467389*^9, 3.918235491823382*^9}, {
+   3.918235655409319*^9, 3.918235763492516*^9}, {3.918235803741522*^9, 
+   3.918235848208145*^9}, {3.918235885276082*^9, 3.918235885711854*^9}, 
+   3.918235946625849*^9, {3.918235977645424*^9, 3.9182360406341248`*^9}, {
+   3.918236155561619*^9, 3.9182363641584044`*^9}, {3.918236394958129*^9, 
+   3.91823652021239*^9}, {3.918236553108253*^9, 3.918236553218647*^9}, {
+   3.91823662439319*^9, 3.918236654401551*^9}, {3.918236717161161*^9, 
+   3.918236735532649*^9}, {3.9182373443118887`*^9, 3.918237448122406*^9}, {
+   3.918237603972815*^9, 3.918237625113781*^9}, {3.9182377545430803`*^9, 
+   3.9182377667624626`*^9}, {3.9182378562549076`*^9, 
+   3.9182378566405582`*^9}, {3.918237979589487*^9, 3.91823797999058*^9}, {
+   3.918238062429336*^9, 3.9182380920567617`*^9}, {3.9182440956256647`*^9, 
+   3.918244096077407*^9}, {3.9182441743998423`*^9, 3.9182441910316687`*^9}, {
+   3.9182442272648907`*^9, 3.9182442853965473`*^9}, {3.91824434242378*^9, 
+   3.918244390029902*^9}, {3.9182448343532257`*^9, 3.918244834935328*^9}, {
+   3.918244867819186*^9, 3.9182448769019823`*^9}, {3.918245505231419*^9, 
+   3.918245510842773*^9}, {3.918245560587109*^9, 3.918245574622046*^9}, {
+   3.918245844487599*^9, 3.9182458449758177`*^9}, {3.918247504038566*^9, 
+   3.918247504247232*^9}, {3.918273317888647*^9, 
+   3.91827332898215*^9}},ExpressionUUID->"3addf36c-6e28-4098-9ed2-\
+ea748737db93"],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.918273971012101*^9},
+ CellLabel->
+  "Out[143]=",ExpressionUUID->"4117d55f-f412-407c-a701-17d4938de00f"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Time To Compute:\\t\"\>", "\[InvisibleSpace]", 
+   TemplateBox[{
+     RowBox[{"\"00:04:17\""}], 
+     RowBox[{"TimeObject", "[", 
+       RowBox[{
+         RowBox[{"{", 
+           RowBox[{"0", ",", "4", ",", "17.052993000000015`"}], "}"}], ",", 
+         "\"Instant\""}], "]"}]},
+    "TimeObject",
+    Editable->False], "\[InvisibleSpace]", "\<\" and \"\>", 
+   "\[InvisibleSpace]", "52.993000000014945`", 
+   "\[InvisibleSpace]", "\<\"ms\\n\"\>", 
+   "\[InvisibleSpace]", "\<\"Almost Minimal Perfect Distance Graphs(\"\>", 
+   "\[InvisibleSpace]", "3", "\[InvisibleSpace]", "\<\"): \\n\"\>", 
+   "\[InvisibleSpace]", 
+   TagBox[
+    TagBox[GridBox[{
+       {
+        GraphicsBox[
+         NamespaceBox["NetworkGraphics",
+          DynamicModuleBox[{Typeset`graph = HoldComplete[
+            Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+              SparseArray[
+              Automatic, {8, 8}, 0, {
+               1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {3}, {1}, {4}, {
+                 1}, {5}, {2}, {6}, {3}, {7}, {4}, {8}, {5}, {8}, {6}, {7}}}, 
+                Pattern}]}]]}, 
+           
+           TagBox[GraphicsGroupBox[
+             GraphicsComplexBox[{{-0.707106781186548, 
+              0.7071067811865482}, {-7.044813998280222*^-16, 1.}, {-1., 
+              1.0106430996148606`*^-15}, {0.707106781186547, 
+              0.7071067811865467}, {-0.7071067811865471, \
+-0.7071067811865468}, {1., -1.133107779529596*^-15}, {
+              6.049014748177263*^-16, -1.}, {
+              0.7071067811865481, -0.7071067811865483}}, {
+               {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[0.], 
+                ArrowBox[{{1, 2}, {1, 3}, {2, 4}, {3, 5}, {4, 6}, {5, 7}, {6, 
+                 8}, {7, 8}}, 0.02261146496815286]}, 
+               {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+                DiskBox[1, 0.02261146496815286], 
+                DiskBox[2, 0.02261146496815286], 
+                DiskBox[3, 0.02261146496815286], 
+                DiskBox[4, 0.02261146496815286], 
+                DiskBox[5, 0.02261146496815286], 
+                DiskBox[6, 0.02261146496815286], 
+                DiskBox[7, 0.02261146496815286], 
+                DiskBox[8, 0.02261146496815286]}}]],
+            MouseAppearanceTag["NetworkGraphics"]],
+           AllowKernelInitialization->False]],
+         DefaultBaseStyle->"NetworkGraphics",
+         FormatType->TraditionalForm,
+         FrameTicks->None], 
+        GraphicsBox[
+         NamespaceBox["NetworkGraphics",
+          DynamicModuleBox[{Typeset`graph = HoldComplete[
+            Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+              SparseArray[
+              Automatic, {8, 8}, 0, {
+               1, {{0, 1, 3, 5, 7, 9, 11, 13, 16}, {{8}, {4}, {6}, {5}, {7}, {
+                 2}, {5}, {3}, {4}, {2}, {8}, {3}, {8}, {1}, {6}, {7}}}, 
+                Pattern}]}]]}, 
+           
+           TagBox[GraphicsGroupBox[
+             GraphicsComplexBox[{{0., 1.0141159859086126`}, {
+              2.650074096663151, 2.0298359397207824`}, {2.6504833876440994`, 
+              0.}, {3.4538420918298516`, 1.486840426457875}, {
+              3.45424177084788, 0.5422604723373543}, {1.6559101166029921`, 
+              1.8110568523047008`}, {1.656382962771182, 
+              0.21867722450444615`}, {0.9648840912988412, 
+              1.0146342634724614`}}, {
+               {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[0.], 
+                ArrowBox[{{1, 8}, {2, 4}, {2, 6}, {3, 5}, {3, 7}, {4, 5}, {6, 
+                 8}, {7, 8}}, 0.033410760631879186`]}, 
+               {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+                DiskBox[1, 0.033410760631879186], 
+                DiskBox[2, 0.033410760631879186], 
+                DiskBox[3, 0.033410760631879186], 
+                DiskBox[4, 0.033410760631879186], 
+                DiskBox[5, 0.033410760631879186], 
+                DiskBox[6, 0.033410760631879186], 
+                DiskBox[7, 0.033410760631879186], 
+                DiskBox[8, 0.033410760631879186]}}]],
+            MouseAppearanceTag["NetworkGraphics"]],
+           AllowKernelInitialization->False]],
+         DefaultBaseStyle->"NetworkGraphics",
+         FormatType->TraditionalForm,
+         FrameTicks->None], 
+        GraphicsBox[
+         NamespaceBox["NetworkGraphics",
+          DynamicModuleBox[{Typeset`graph = HoldComplete[
+            Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+              SparseArray[
+              Automatic, {8, 8}, 0, {
+               1, {{0, 1, 3, 5, 7, 9, 11, 13, 16}, {{7}, {4}, {5}, {4}, {6}, {
+                 2}, {3}, {2}, {8}, {3}, {8}, {1}, {8}, {5}, {6}, {7}}}, 
+                Pattern}]}]]}, 
+           
+           TagBox[GraphicsGroupBox[
+             GraphicsComplexBox[{{4.429882012540203, 0.7179306585321803}, {
+              0.5419536798232407, 1.4360044073083016`}, {0.5412583256978183, 
+              0.}, {0., 0.7182616817047082}, {1.5322796251794326`, 
+              1.379920132055902}, {1.5317120158161965`, 
+              0.055976815878286845`}, {3.5069989251897056`, 
+              0.7180342297239256}, {2.3593433546623905`, 
+              0.7174558223766931}}, {
+               {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[0.], 
+                ArrowBox[{{1, 7}, {2, 4}, {2, 5}, {3, 4}, {3, 6}, {5, 8}, {6, 
+                 8}, {7, 8}}, 0.03968488605625638]}, 
+               {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+                DiskBox[1, 0.03968488605625638], 
+                DiskBox[2, 0.03968488605625638], 
+                DiskBox[3, 0.03968488605625638], 
+                DiskBox[4, 0.03968488605625638], 
+                DiskBox[5, 0.03968488605625638], 
+                DiskBox[6, 0.03968488605625638], 
+                DiskBox[7, 0.03968488605625638], 
+                DiskBox[8, 0.03968488605625638]}}]],
+            MouseAppearanceTag["NetworkGraphics"]],
+           AllowKernelInitialization->False]],
+         DefaultBaseStyle->"NetworkGraphics",
+         FormatType->TraditionalForm,
+         FrameTicks->None]}
+      },
+      GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.7]}, 
+          Offset[0.27999999999999997`]}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}}],
+     Row],
+    Function[BoxForm`e$, 
+     TableForm[BoxForm`e$, TableDirections -> Row]]], 
+   "\[InvisibleSpace]", "\<\"\\n\"\>"}],
+  SequenceForm["Time To Compute:\t", 
+   TimeObject[{0, 4, 17.052993000000015`}, "Instant"], " and ", 
+   52.993000000014945`, "ms\n", "Almost Minimal Perfect Distance Graphs(", 3, 
+   "): \n", 
+   TableForm[{
+     Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+       SparseArray[
+       Automatic, {8, 8}, 0, {
+        1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {3}, {1}, {4}, {1}, {5}, {
+          2}, {6}, {3}, {7}, {4}, {8}, {5}, {8}, {6}, {7}}}, Pattern}]}], 
+     Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+       SparseArray[
+       Automatic, {8, 8}, 0, {
+        1, {{0, 1, 3, 5, 7, 9, 11, 13, 16}, {{8}, {4}, {6}, {5}, {7}, {2}, {
+          5}, {3}, {4}, {2}, {8}, {3}, {8}, {1}, {6}, {7}}}, Pattern}]}], 
+     Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+       SparseArray[
+       Automatic, {8, 8}, 0, {
+        1, {{0, 1, 3, 5, 7, 9, 11, 13, 16}, {{7}, {4}, {5}, {4}, {6}, {2}, {
+          3}, {2}, {8}, {3}, {8}, {1}, {8}, {5}, {6}, {7}}}, Pattern}]}]}, 
+    TableDirections -> Row], "\n"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.918273971036998*^9},
+ CellLabel->
+  "During evaluation of \
+In[145]:=",ExpressionUUID->"81aef585-7357-4b5c-8ae9-85b18bdb7d25"]
+}, Open  ]]
+},
+WindowSize->{1280, 679},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+Magnification:>0.75 Inherited,
+FrontEndVersion->"14.0 for Mac OS X x86 (64-bit) (December 12, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"342cdc08-ad0d-4085-8d71-3d09a7b6f24b"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 7773, 174, 430, "Input",ExpressionUUID->"ea773a97-fc2c-4b1f-9806-a7c2b807f6fd"],
+Cell[CellGroupData[{
+Cell[8356, 198, 12135, 261, 930, "Input",ExpressionUUID->"3addf36c-6e28-4098-9ed2-ea748737db93"],
+Cell[20494, 461, 160, 3, 32, "Output",ExpressionUUID->"4117d55f-f412-407c-a701-17d4938de00f"],
+Cell[20657, 466, 7705, 163, 175, "Print",ExpressionUUID->"81aef585-7357-4b5c-8ae9-85b18bdb7d25"]
+}, Open  ]]
+}
+]
+*)
+
